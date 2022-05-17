@@ -1,0 +1,144 @@
+<template>
+  <div class="catalog">
+    <div class="catalog__menu menu">
+      <div class="menu__list">
+        <div class="menu__item">
+
+        </div>
+      </div>
+    </div>
+    <div class="catalog__list">
+      <div class="catalog__row" v-for="good in this.$store.getters.goods">
+        <div class="catalog__cell">
+          <div class="catalog__image">
+            <img :src="good.imagePath" alt="">
+          </div>
+        </div>
+        <div class="catalog__cell">
+          {{ good.code }}
+        </div>
+        <div class="catalog__cell">
+          {{ good.title }}
+        </div>
+        <div class="catalog__cell">
+          {{ good.price }}
+        </div>
+        <div class="catalog__cell">
+          <div class="catalog__button" @click="openPopup(good)">
+            <div class="catalog__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                   stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <AddGoodPopup
+    :is-opened="popupOpened"
+    @close="closePopup"
+    @add="addGood($event)"/>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import AddGoodPopup from "@/components/AddGoodPopup";
+
+export default {
+  name: 'Home',
+  components: {
+    AddGoodPopup
+  },
+  data() {
+    return {
+      goods: [],
+      popupOpened: false,
+      selectedGood: null,
+    }
+  },
+  methods: {
+    openPopup(good) {
+      this.popupOpened = true
+      this.selectedGood = good
+
+    },
+    closePopup() {
+      this.popupOpened = false
+    },
+    addGood(event){
+      this.$store.commit('addGood', {
+        good: this.selectedGood,
+        quantity: event,
+      })
+      this.popupOpened = false
+    }
+  },
+  created() {
+    this.$store.dispatch('fetchGoods')
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.catalog {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+
+  &__list {
+    border-left: 1px solid gray;
+  }
+
+  &__row {
+    height: 80px;
+    display: grid;
+    grid-template-columns: 100px 60px 1fr 100px 100px;
+    border-bottom: 1px solid #000;
+  }
+
+  &__cell {
+    &:not(:last-child) {
+      border-right: 1px solid gray;
+    }
+  }
+
+  &__image {
+    width: 50px;
+    height: 50px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+
+    svg {
+      path {
+        stroke-width: 1.5;
+      }
+    }
+  }
+
+  &__button:hover &__icon {
+    svg {
+      path {
+        stroke-width: 2;
+      }
+    }
+  }
+}
+</style>
