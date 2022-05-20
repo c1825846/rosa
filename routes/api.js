@@ -169,6 +169,7 @@ router.get('/priceList',  async (req, res) => {
     pdf.create(priceList, pdfOptions)
         .then(result => {
             res.json('ok')
+            res.json('ok')
         })
         .catch(err => {
         })

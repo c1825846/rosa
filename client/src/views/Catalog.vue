@@ -1,14 +1,38 @@
 <template>
   <div class="catalog">
     <div class="catalog__menu menu">
-      <div class="menu__list">
-        <div class="menu__item">
-
+      <div class="menu__category">
+        <div class="menu__category-header" @click="clearCategory">
+          <div class="menu__category-title">
+            Все товары
+          </div>
+        </div>
+      </div>
+      <div
+          class="menu__category"
+          v-for="category in $store.getters.categories"
+      >
+        <div class="menu__category-header"
+             :class="{'menu__category-header--selected': category === selectedCategory}"
+             @click="selectCategory(category)">
+          <div class="menu__category-title">
+            {{ category.category }}
+          </div>
+        </div>
+        <div class="" v-if="category === selectedCategory">
+          <div
+              class="menu__subcategory"
+              :class="{'menu__subcategory--selected': subcategory === selectedSubcategory}"
+              v-for="subcategory in $store.getters.subcategories.filter(item => item.parent === category.category)"
+              @click="selectSubcategory(subcategory)"
+          >
+            {{ subcategory.subcategory }}
+          </div>
         </div>
       </div>
     </div>
     <div class="catalog__list">
-      <div class="catalog__row" v-for="good in this.$store.getters.goods">
+      <div class="catalog__row" v-for="good in filteredGoods">
         <div class="catalog__cell">
           <div class="catalog__image">
             <img :src="good.imagePath" alt="">
@@ -36,9 +60,9 @@
       </div>
     </div>
     <AddGoodPopup
-    :is-opened="popupOpened"
-    @close="closePopup"
-    @add="addGood($event)"/>
+        :is-opened="popupOpened"
+        @close="closePopup"
+        @add="addGood($event)"/>
   </div>
 </template>
 
@@ -56,6 +80,22 @@ export default {
       goods: [],
       popupOpened: false,
       selectedGood: null,
+      selectedCategory: null,
+      selectedSubcategory: null,
+    }
+  },
+  computed: {
+    allGoods() {
+      return this.$store.getters.goods
+    },
+    filteredGoods() {
+      if (this.selectedCategory && !this.selectedSubcategory) {
+        return this.allGoods.filter(good => good.category === this.selectedCategory.category)
+      } else if (this.selectedSubcategory) {
+        return this.allGoods.filter(good => good.subcategory === this.selectedSubcategory.subcategory)
+      } else {
+        return this.allGoods
+      }
     }
   },
   methods: {
@@ -67,13 +107,29 @@ export default {
     closePopup() {
       this.popupOpened = false
     },
-    addGood(event){
+    addGood(event) {
       this.$store.commit('addGood', {
         good: this.selectedGood,
         quantity: event,
       })
       this.popupOpened = false
-    }
+    },
+    selectSubcategory(event) {
+      this.selectedSubcategory = event
+    },
+    clearCategory() {
+      this.selectedCategory = null
+      this.selectedSubcategory = null
+    },
+    selectCategory(event) {
+      if (event === this.selectedCategory) {
+        this.selectedCategory = null
+        this.selectedSubcategory = null
+      } else {
+        this.selectedCategory = event
+        this.selectedSubcategory = null
+      }
+    },
   },
   created() {
     this.$store.dispatch('fetchGoods')
@@ -137,6 +193,35 @@ export default {
     svg {
       path {
         stroke-width: 2;
+      }
+    }
+  }
+
+  .menu {
+    &__category {
+      cursor: pointer;
+
+      &-header {
+        display: flex;
+        padding: 10px;
+        border-bottom: 1px solid #000;
+        font-weight: 700;
+        &--selected {
+          background: #e7e7e7;
+        }
+      }
+
+      &-open {
+        padding-right: 10px;
+      }
+    }
+
+    &__subcategory {
+      cursor: pointer;
+      padding: 10px 10px 10px 30px;
+      border-bottom: 1px solid #000;
+      &--selected {
+        background: #f5f5f5;
       }
     }
   }

@@ -85,7 +85,7 @@ export default new Vuex.Store({
                 body: JSON.stringify(order)
             })
                 .then(response => response.json())
-                .then(data=> {
+                .then(data => {
                     context.commit('clearCart')
                 })
         },
@@ -97,7 +97,16 @@ export default new Vuex.Store({
                 .then(data => {
                     context.commit('setCategories', data)
                 })
-        }
+        },
+        fetchSubcategories(context) {
+            fetch('/api/subcategory')
+                .then(response => {
+                    return response.json()
+                })
+                .then(data => {
+                    context.commit('setSubCategories', data)
+                })
+        },
     },
     modules: {},
     getters: {

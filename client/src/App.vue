@@ -94,6 +94,8 @@ export default {
       this.$store.commit('setUser', JSON.parse(localStorage.user))
     }
     this.$store.dispatch('fetchGoods')
+    this.$store.dispatch('fetchCategories')
+    this.$store.dispatch('fetchSubcategories')
   }
 }
 </script>
