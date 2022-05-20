@@ -5,41 +5,12 @@
         <div class="nav__link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-          </svg>
-        </div>
-        Каталог
-      </router-link>
-      <router-link to="/cart" class="nav__link">
-        <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
         </div>
-        Корзина
+        Заявки
       </router-link>
-      <router-link to="/about" class="nav__link">
-        <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
-        О компании
-      </router-link>
-      <div class="nav__link" @click="getPriceList">
-        <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-        </div>
-        Прайс-лист
-      </div>
       <div class="nav__link" @click="logout">
         <div class="nav__link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -53,38 +24,18 @@
     </div>
     <router-view class="app__main"/>
     <div class="app__footer" v-if="$store.getters.user">
-      В корзине <b>
-      {{ $store.getters.cart.length }}
-    </b> наименований на сумму <b>
-      {{ cartSum }}
-    </b> рублей
+      Заявок на отгрузку: <b>{{ $store.getters.orders.length }}</b>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  computed: {
-    cartSum() {
-      const cartSum = this.$store.getters.cart.reduce((acc, good) => {
-        return acc + good.good.price * good.quantity
-      }, 0)
-      return Math.trunc(cartSum * 100) / 100
-    }
-  },
   methods: {
     logout() {
       this.$store.commit('setUser', null)
       localStorage.user = null
       this.$router.push('/login')
-    },
-    getPriceList() {
-      fetch('/api/priceList')
-          .then(response => response.json)
-          .then(data => {
-            window.location = 'uploads/priceList.pdf'
-          })
     }
   },
   created() {

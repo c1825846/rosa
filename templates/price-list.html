@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Прайс лист</title>
+    <style>
+        body {
+            font-size: 20px;
+        }
+        .title {
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+<div class="title">Прайс лист ООО "Роса" на {{ date }}</div>
+<div class="list">
+    <table border="1" cellpadding="3" cellspacing="0">
+        <tr>
+            <th>Код</th>
+            <th>Наименование</th>
+            <th>Цена, руб.</th>
+        </tr>
+        {{#each goods}}
+        <tr>
+            <td>{{this.code}}</td>
+            <td>{{this.title}}</td>
+            <td>{{this.price}}</td>
+        </tr>
+        {{/each}}
+    </table>
+</div>
+</body>
+</html>

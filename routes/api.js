@@ -2,6 +2,8 @@ const {Router} = require('express')
 const router = new Router()
 const mongoose = require('mongoose')
 const path = require('node:path')
+const pdf = require('pdf-creator-node')
+const fs = require('node:fs')
 
 const Good = require('../models/Good')
 const GoodCategory = require('../models/GoodCategory')
@@ -45,6 +47,32 @@ router.post('/order', async (req, res) => {
     res.json(order)
 })
 
+router.get('/orders', async (req, res) => {
+    const orders = await Order.find({})
+    res.json(orders)
+})
+
+router.get('/approveOrder/:id', async (req, res) => {
+    const order = await Order.findOne({_id: req.params.id})
+    const cart = order.cart
+    let canApprove = true
+    for (const item of cart) {
+        const good = await Good.findOne({code: item.good})
+        if (good.quantity < item.quantity)
+            canApprove = false
+    }
+    if (canApprove) {
+        for (const item of cart) {
+            const good = await Good.findOne({code: item.good})
+            good.quantity -= item.quantity
+            await good.save()
+        }
+        order.approvedDate = Date.now()
+        order.save()
+    }
+    res.json(order)
+})
+
 router.post('/category', async (req, res) => {
     const category = new GoodCategory({
         category: req.body.category
@@ -78,7 +106,6 @@ router.get('/subcategory', (req, res) => {
 
 router.post('/capitalize', async (req, res) => {
     const {goodCode, quantity} = req.body
-    console.log(goodCode)
     Good.findOne({'code': goodCode}, (err, good) => {
         if (err) throw err
         good.quantity += +quantity
@@ -97,6 +124,55 @@ router.post('/login', async (req, res) => {
         }
         res.json({user})
     })
+})
+
+router.get('/approvedOrders', async (req, res) => {
+    const orders = await Order.find({
+        $and: [
+            {
+                approvedDate: {$exists: true}
+            },
+            {
+                shippedDate: {$exists: false}
+            }
+        ]
+    })
+    res.json(orders)
+})
+
+router.get('/shipOrder/:id', async (req, res) => {
+    const order = await Order.findOne({_id: req.params.id})
+    order.shippedDate = Date.now()
+    order.save()
+    res.json(order)
+})
+
+router.get('/priceList',  async (req, res) => {
+    const goodsRaw = await Good.find({})
+    const goods = JSON.parse(JSON.stringify(goodsRaw))
+    const template = fs.readFileSync(path.join(__dirname, '../templates/price-list.html'), 'utf-8')
+    const pdfOptions = {
+        format: "A4",
+        orientation: "portrait",
+        border: "10mm",
+    }
+    const date = new Date(Date.now())
+    const priceList = {
+        html: template,
+        data: {
+            goods: goods,
+            date: `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
+        },
+        path: './uploads/priceList.pdf',
+        type: '',
+    }
+    pdf.create(priceList, pdfOptions)
+        .then(result => {
+            res.json('ok')
+        })
+        .catch(err => {
+        })
+
 })
 
 

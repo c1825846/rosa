@@ -1,22 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Catalog from "@/views/Catalog";
 
 Vue.use(VueRouter)
 
 const routes = [
-    {
-        path: '/',
-        name: 'Catalog',
-        component: Catalog
-    },
     {
         path: '/login',
         name: 'Login',
         component: () => import('@/views/Login')
     },
     {
-        path: '/orders',
+        path: '/',
         name: 'Orders',
         component: () => import('@/views/Orders')
     }

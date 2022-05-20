@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {response} from "express";
 
 Vue.use(Vuex)
 
@@ -85,6 +84,10 @@ export default new Vuex.Store({
                 },
                 body: JSON.stringify(order)
             })
+                .then(response => response.json())
+                .then(data=> {
+                    context.commit('clearCart')
+                })
         },
         fetchCategories(context) {
             fetch('/api/category')

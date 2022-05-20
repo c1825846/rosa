@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <div class="app__nav nav">
+    <div class="app__nav nav" v-if="$store.getters.user">
       <router-link to="/" class="nav__link">
         <div class="nav__link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -10,7 +10,7 @@
         </div>
         Каталог
       </router-link>
-      <router-link to="/cart" class="nav__link">
+      <router-link to="/orders" class="nav__link">
         <div class="nav__link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -18,15 +18,7 @@
         </div>
         Заявки
       </router-link>
-      <router-link to="/discounts" class="nav__link">
-        <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-        </div>
-        Акции
-      </router-link>
-      <router-link to="/login" class="nav__link">
+      <div class="nav__link" @click="logout">
         <div class="nav__link-icon">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                stroke-width="2">
@@ -35,18 +27,31 @@
           </svg>
         </div>
         Выход
-      </router-link>
+      </div>
     </div>
     <router-view class="app__main"/>
-    <div class="app__footer">
-      В корзине <b>6</b> наименований на сумму <b>23000</b> рублей
+    <div class="app__footer" v-if="$store.getters.user">
+      Нерассмотренных заявок: <b>{{ $store.getters.receivedOrdersQuantity }}</b>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  methods: {
+    logout() {
+      this.$store.commit('setUser', null)
+      localStorage.user = null
+      this.$router.push('/login')
+    }
+  },
   created() {
+    if (!localStorage.user) {
+      this.$router.push('/login')
+    }
+    else {
+      this.$store.commit('setUser', JSON.parse(localStorage.user))
+    }
     this.$store.dispatch('fetchGoods')
     this.$store.dispatch('fetchCategories')
     this.$store.dispatch('fetchSubcategories')
@@ -115,6 +120,7 @@ a {
     align-items: center;
     width: 125px;
     text-align: center;
+    cursor: pointer;
 
     &-icon {
       width: 30px;
