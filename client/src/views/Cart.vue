@@ -17,6 +17,7 @@
     <div class="cart__list">
       <CartItem
           v-for="good in $store.getters.cart"
+          :key="good.good._id"
           :good="good"/>
     </div>
   </div>
@@ -67,13 +68,8 @@ export default {
   }
 
   &__button {
-    background: none;
-    border: none;
-    border-right: 1px solid #000;
-    outline: none;
-    height: 100%;
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 10px;
   }
 }
 </style>

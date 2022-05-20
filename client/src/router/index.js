@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Catalog from "@/views/Catalog";
-import About from "@/views/About";
-import Login from "@/views/Login";
 
 Vue.use(VueRouter)
 

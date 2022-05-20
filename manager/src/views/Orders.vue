@@ -150,6 +150,7 @@ export default {
     },
     refreshOrders(){
       this.$store.dispatch('fetchOrders')
+      this.$root.$emit('notification', 'Список обновлён')
     },
   },
   created() {

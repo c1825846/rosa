@@ -10,6 +10,7 @@ export default new Vuex.Store({
     subcategories: [],
     orders: [],
     user: null,
+    clients: [],
   },
   mutations: {
     setGoods(state, goods) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     },
     setUser(state, user) {
       state.user = user
+    },
+    setClients(state, clients) {
+      state.clients = clients
     }
   },
   actions: {
@@ -62,6 +66,13 @@ export default new Vuex.Store({
           .then(data => {
             context.commit('setOrders', data)
           })
+    },
+    fetchClients(context) {
+      fetch('/api/clients')
+          .then(response => response.json())
+          .then(data => {
+            context.commit('setClients', data)
+          })
     }
   },
   modules: {
@@ -89,6 +100,9 @@ export default new Vuex.Store({
     },
     user(state) {
       return state.user
+    },
+    clients(state) {
+      return state.clients
     }
   }
 })

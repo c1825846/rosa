@@ -147,7 +147,7 @@ router.get('/shipOrder/:id', async (req, res) => {
     res.json(order)
 })
 
-router.get('/priceList',  async (req, res) => {
+router.get('/priceList', async (req, res) => {
     const goodsRaw = await Good.find({})
     const goods = JSON.parse(JSON.stringify(goodsRaw))
     const template = fs.readFileSync(path.join(__dirname, '../templates/price-list.html'), 'utf-8')
@@ -174,6 +174,20 @@ router.get('/priceList',  async (req, res) => {
         .catch(err => {
         })
 
+})
+
+router.post('/clients', async (req, res) => {
+    const {login, password, lastname, name, middlename, organization, eMail, phone} = req.body
+    const user = new User({
+        login, password, lastname, name, middlename, organization, eMail, phone, role: 'client'
+    })
+    await user.save()
+    res.json(user)
+})
+
+router.get('/clients', async (req, res) => {
+    const clients = await User.find({role: 'client'})
+    res.json(clients)
 })
 
 
