@@ -190,5 +190,14 @@ router.get('/clients', async (req, res) => {
     res.json(clients)
 })
 
+router.delete('/good/:code', async (req, res) => {
+    await Good.deleteOne({'code': req.params.code})
+    res.json({message: 'deleted'})
+})
+
+router.post('uploadCatalog', async (req, res) => {
+
+})
+
 
 module.exports = router

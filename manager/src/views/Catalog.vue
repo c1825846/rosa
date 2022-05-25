@@ -19,6 +19,12 @@
       >
         Добавить Подкатегорию
       </button>
+<!--      <button-->
+<!--          class="catalog__button"-->
+<!--          @click="showUploadCatalogPopup"-->
+<!--      >-->
+<!--        Загрузить товары файлом-->
+<!--      </button>-->
     </div>
     <div class="catalog__body">
       <div class="catalog__menu menu">
@@ -72,6 +78,9 @@
           <div class="catalog__cell">
             Добавить на склад
           </div>
+          <div class="catalog__cell">
+            Удалить
+          </div>
         </div>
         <div class="catalog__row" v-for="good in filteredGoods">
           <div class="catalog__cell">
@@ -101,6 +110,17 @@
               </div>
             </div>
           </div>
+          <div class="catalog__cell">
+            <div class="catalog__button" @click="deleteGood(good.code)">
+              <div class="catalog__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -124,6 +144,11 @@
         @close="closeCapitalizePopup"
         @add="capitalize($event)"
     />
+    <UploadCatalogPopup
+        :is-opened="isUploadCatalogPopupOpened"
+        @close="closeUploadCatalogPopup"
+        @add="uploadCatalog($event)"
+    />
   </div>
 </template>
 
@@ -133,6 +158,7 @@ import AddGoodPopup from "@/components/AddGoodPopup";
 import AddCategoryPopup from "@/components/AddCategoryPopup";
 import AddSubcategoryPopup from "@/components/AddSubcategoryPopup";
 import CapitalizePopup from "@/components/CapitalizePopup";
+import UploadCatalogPopup from "@/components/UploadCatalogPopup";
 
 export default {
   name: 'Home',
@@ -140,7 +166,8 @@ export default {
     AddGoodPopup,
     AddCategoryPopup,
     AddSubcategoryPopup,
-    CapitalizePopup
+    CapitalizePopup,
+    UploadCatalogPopup
   },
   data() {
     return {
@@ -148,6 +175,7 @@ export default {
       isSubcategoryPopupOpened: false,
       isGoodPopupOpened: false,
       isCapitalizePopupOpened: false,
+      isUploadCatalogPopupOpened: false,
       goodCodeToCapitalize: null,
       selectedCategory: null,
       selectedSubcategory: null,
@@ -231,13 +259,17 @@ export default {
       this.isCapitalizePopupOpened = true
     },
     async capitalize(quantity) {
+      if (quantity <= 0) {
+        this.$root.$emit('notification', 'Невозможно добавить отрицательное число товаров')
+        return
+      }
       let response = await fetch('/api/capitalize', {
         method: 'POST',
-        headers:{
+        headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          goodCode:this.goodCodeToCapitalize, quantity
+          goodCode: this.goodCodeToCapitalize, quantity
         })
       })
       await this.$store.dispatch('fetchGoods')
@@ -260,6 +292,24 @@ export default {
         this.selectedSubcategory = null
       }
     },
+    deleteGood(event) {
+      fetch(`/api/good/${event}`, {
+        method: 'DELETE',
+      }).then(response => response.json()).then(data => {
+        this.$store.dispatch('fetchGoods')
+        this.$root.$emit('notification', 'Товар удалён')
+      })
+    },
+    closeUploadCatalogPopup() {
+      this.isUploadCatalogPopupOpened = false
+    },
+    showUploadCatalogPopup() {
+      this.isUploadCatalogPopupOpened = true
+    },
+    uploadCatalog(event) {
+      console.log(event)
+      this.isUploadCatalogPopupOpened = false
+    }
   }
 }
 </script>
@@ -279,8 +329,9 @@ export default {
   &__row {
     height: 80px;
     display: grid;
-    grid-template-columns: 100px 100px 1fr 100px 100px 100px;
+    grid-template-columns: 100px 100px 1fr 100px 100px 100px 100px;
     border-bottom: 1px solid #000;
+
     &--title {
       height: 40px;
       font-size: 14px;
@@ -345,6 +396,7 @@ export default {
     width: auto;
   }
 }
+
 .menu {
   &__category {
     cursor: pointer;
@@ -354,6 +406,7 @@ export default {
       padding: 10px;
       border-bottom: 1px solid #000;
       font-weight: 700;
+
       &--selected {
         background: #e7e7e7;
       }
@@ -368,6 +421,7 @@ export default {
     cursor: pointer;
     padding: 10px 10px 10px 30px;
     border-bottom: 1px solid #000;
+
     &--selected {
       background: #f5f5f5;
     }

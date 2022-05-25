@@ -86,7 +86,9 @@ export default {
   },
   computed: {
     allGoods() {
-      return this.$store.getters.goods
+      return this.$store.getters.goods.filter(good => {
+        return good.quantity > 0
+      })
     },
     filteredGoods() {
       if (this.selectedCategory && !this.selectedSubcategory) {
