@@ -190,6 +190,11 @@ router.get('/clients', async (req, res) => {
     res.json(clients)
 })
 
+router.delete('/clients/:id', async (req, res) => {
+    await User.deleteOne({_id: req.params.id})
+    res.json({message: 'deleted'})
+})
+
 router.delete('/good/:code', async (req, res) => {
     await Good.deleteOne({'code': req.params.code})
     res.json({message: 'deleted'})

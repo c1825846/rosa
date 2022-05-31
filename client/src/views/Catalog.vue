@@ -50,10 +50,7 @@
         <div class="catalog__cell">
           <div class="catalog__button" @click="openPopup(good)">
             <div class="catalog__icon">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-              </svg>
+              <img src="@/assets/addToCart.png" alt="">
             </div>
           </div>
         </div>
@@ -178,6 +175,7 @@ export default {
     place-items: center;
     width: 100%;
     height: 100%;
+
   }
 
   &__icon {
@@ -188,6 +186,12 @@ export default {
       path {
         stroke-width: 1.5;
       }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
 

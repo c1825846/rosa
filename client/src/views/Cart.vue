@@ -70,6 +70,8 @@ export default {
   &__button {
     cursor: pointer;
     padding: 10px;
+    background: #33a233;
+    border: 1px solid #000;
   }
 }
 </style>

@@ -80,6 +80,8 @@ export default {
   &__button {
     padding: 10px;
     cursor: pointer;
+    background: #33a233;
+    border: 1px solid #000;
   }
 }
 .order {

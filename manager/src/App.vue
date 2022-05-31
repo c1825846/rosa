@@ -3,36 +3,25 @@
     <div class="app__nav nav" v-if="$store.getters.user">
       <router-link to="/" class="nav__link">
         <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-          </svg>
+          <img src="@/assets/catalog.png" alt="">
         </div>
         Каталог
       </router-link>
       <router-link to="/orders" class="nav__link">
         <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+          <img src="@/assets/orders.png" alt="">
         </div>
         Заявки
       </router-link>
       <router-link to="/clients" class="nav__link">
         <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
+          <img src="@/assets/clients.png" alt="">
         </div>
         Клиенты
       </router-link>
       <div class="nav__link" @click="logout">
         <div class="nav__link-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
+          <img src="@/assets/exit.png" alt="">
         </div>
         Выход
       </div>
@@ -101,7 +90,7 @@ a {
     position: fixed;
     left: 0;
     top: 0;
-    background: white;
+    background: #e3c607;
     width: 100%;
     height: 70px;
   }
@@ -143,6 +132,12 @@ a {
         path {
           stroke-width: 1.5;
         }
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
     }
 

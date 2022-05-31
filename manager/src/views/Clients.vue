@@ -11,6 +11,7 @@
         <div class="clients__cell">Организация</div>
         <div class="clients__cell">Телефон</div>
         <div class="clients__cell">E-mail</div>
+        <div class="clients__cell">Удал.</div>
       </div>
       <div class="clients__row"
            v-for="client in $store.getters.clients">
@@ -25,6 +26,13 @@
         </div>
         <div class="clients__cell">
           {{ client.eMail }}
+        </div>
+        <div class="clients__cell">
+          <div class="clients__delete" @click="deleteClient(client._id)">
+            <div class="clients__icon">
+              <img src="@/assets/delete.png" alt="">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -68,6 +76,13 @@ export default {
             this.$store.dispatch('fetchClients')
           })
       this.closePopup()
+    },
+    deleteClient(id){
+      fetch(`/api/clients/${id}`, {
+        method: 'DELETE'
+      }).then(response => response.json()).then(data => {
+        this.$store.dispatch('fetchClients')
+      })
     }
   }
 }
@@ -82,16 +97,32 @@ export default {
   &__button {
     padding: 10px;
     cursor: pointer;
+    background: #33a233;
+    border: 1px solid #000;
   }
 
   &__row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr) 60px;
     border-bottom: 1px solid #000;
 
     &--title {
       text-align: center;
       font-weight: 700;
+    }
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__delete {
+    cursor: pointer;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
 
