@@ -159,8 +159,8 @@ export default {
   }
 
   &__image {
-    width: 50px;
-    height: 50px;
+    width: 99px;
+    height: 79px;
 
     img {
       width: 100%;
