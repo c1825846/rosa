@@ -32,19 +32,26 @@
       </div>
     </div>
     <div class="catalog__list">
+      <div class="catalog__row catalog__row--title">
+        <div class="catalog__cell">Картинка</div>
+        <div class="catalog__cell">Код</div>
+        <div class="catalog__cell">Наименование</div>
+        <div class="catalog__cell">Цена, руб.</div>
+        <div class="catalog__cell">Добавить</div>
+      </div>
       <div class="catalog__row" v-for="good in filteredGoods">
         <div class="catalog__cell">
-          <div class="catalog__image">
+          <div class="catalog__image" @click.stop="openedImage=good.imagePath">
             <img :src="good.imagePath" alt="">
           </div>
         </div>
-        <div class="catalog__cell">
+        <div class="catalog__cell catalog__cell--text-center">
           {{ good.code }}
         </div>
         <div class="catalog__cell">
           {{ good.title }}
         </div>
-        <div class="catalog__cell">
+        <div class="catalog__cell catalog__cell--text-center">
           {{ good.price }}
         </div>
         <div class="catalog__cell">
@@ -60,17 +67,23 @@
         :is-opened="popupOpened"
         @close="closePopup"
         @add="addGood($event)"/>
+    <ImagePopup
+      v-if="openedImage"
+      :src="openedImage"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import AddGoodPopup from "@/components/AddGoodPopup";
+import ImagePopup from "@/components/ImagePopup";
 
 export default {
   name: 'Home',
   components: {
-    AddGoodPopup
+    AddGoodPopup,
+    ImagePopup,
   },
   data() {
     return {
@@ -79,6 +92,7 @@ export default {
       selectedGood: null,
       selectedCategory: null,
       selectedSubcategory: null,
+      openedImage: '',
     }
   },
   computed: {
@@ -132,6 +146,15 @@ export default {
   },
   created() {
     this.$store.dispatch('fetchGoods')
+  },
+  watch: {
+    openedImage(newValue, oldValue) {
+      if (newValue !== '') {
+        document.body.addEventListener('click', e => {
+          this.openedImage = ''
+        })
+      }
+    }
   }
 }
 </script>
@@ -150,17 +173,30 @@ export default {
     display: grid;
     grid-template-columns: 100px 60px 1fr 100px 100px;
     border-bottom: 1px solid #000;
+    &--title {
+      height: 30px;
+      font-weight: 700;
+    }
   }
 
   &__cell {
     &:not(:last-child) {
       border-right: 1px solid gray;
     }
+    &--text-center {
+      text-align: center;
+    }
+  }
+
+  &__row--title &__cell {
+    display: grid;
+    place-items: center;
   }
 
   &__image {
     width: 99px;
     height: 79px;
+    cursor: pointer;
 
     img {
       width: 100%;

@@ -82,16 +82,16 @@
               <img :src="good.imagePath" alt="">
             </div>
           </div>
-          <div class="catalog__cell">
+          <div class="catalog__cell catalog__cell--text-center">
             {{ good.code }}
           </div>
           <div class="catalog__cell">
             {{ good.title }}
           </div>
-          <div class="catalog__cell">
+          <div class="catalog__cell catalog__cell--text-center">
             {{ good.price }}
           </div>
-          <div class="catalog__cell">
+          <div class="catalog__cell catalog__cell--text-center">
             {{ good.quantity }}
           </div>
           <div class="catalog__cell">
@@ -331,11 +331,14 @@ export default {
     &:not(:last-child) {
       border-right: 1px solid gray;
     }
+    &--text-center {
+      text-align: center;
+    }
   }
 
   &__image {
-    width: 50px;
-    height: 50px;
+    width: 99px;
+    height: 79px;
 
     img {
       width: 100%;
